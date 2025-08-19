@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '27 5 * * *'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install backend deps
+        working-directory: backend
+        run: pnpm install --frozen-lockfile
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Backend typecheck and build
+        working-directory: backend
+        run: |
+          pnpm prisma generate
+          pnpm build
+
+      - name: Backend unit tests
+        working-directory: backend
+        run: pnpm test
+
+      - name: Frontend build
+        working-directory: frontend
+        run: pnpm build
+
+      - name: E2E smoke (Playwright against preview and backend dev)
+        working-directory: frontend
+        env:
+          CI: true
+        run: |
+          npx playwright install --with-deps
+          # Start backend and preview servers
+          pnpm -C ../backend dev &
+          BACK_PID=$!
+          pnpm preview &
+          FRONT_PID=$!
+          # Wait for ports
+          timeout 120 bash -c 'until curl -sf http://localhost:4000/health; do sleep 2; done'
+          timeout 120 bash -c 'until curl -sf http://localhost:5173/; do sleep 2; done'
+          # Run tests
+          pnpm test:ci
+          # Cleanup
+          kill $FRONT_PID || true
+          kill $BACK_PID || true
+
+  docker:
+    if: github.ref == 'refs/heads/main'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set tags
+        id: vars
+        run: |
+          echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+          echo "sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      - name: Build backend image
+        run: |
+          docker build -t ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-backend:latest \
+                       -t ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-backend:${{ steps.vars.outputs.sha }} backend
+          docker push ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-backend:latest
+          docker push ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-backend:${{ steps.vars.outputs.sha }}
+      - name: Build frontend image
+        run: |
+          docker build -t ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-frontend:latest \
+                       -t ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-frontend:${{ steps.vars.outputs.sha }} frontend
+          docker push ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-frontend:latest
+          docker push ghcr.io/${{ steps.vars.outputs.owner }}/trueplace-frontend:${{ steps.vars.outputs.sha }}

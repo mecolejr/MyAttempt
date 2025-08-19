@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Location {
+  id              Int     @id @default(autoincrement())
+  name            String
+  state           String
+  crimeRate       Float?
+  hateCrimeIndex  Float?
+  diversityIndex  Float?
+  policyScore     Float?
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@unique([name, state], name: "name_state")
+
+  // Relations
+  hateCrimes   HateCrime[]
+  crimeStats   CrimeStats[]
+  demographics Demographics[]
+  favorites    Favorite[]
+}
+
+model HateCrime {
+  id         Int    @id @default(autoincrement())
+  locationId Int
+  biasType   String
+  incidents  Int
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  location   Location @relation(fields: [locationId], references: [id])
+
+  @@unique([locationId, biasType])
+}
+
+model CrimeStats {
+  id           Int    @id @default(autoincrement())
+  locationId   Int
+  violentRate  Float?
+  propertyRate Float?
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  location     Location @relation(fields: [locationId], references: [id])
+
+  @@unique([locationId])
+}
+
+model Demographics {
+  id           Int    @id @default(autoincrement())
+  locationId   Int
+  diversity    Float?
+  // Optional JSON for group shares (e.g., {"group":"share"})
+  groupShares  Json?
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  location     Location @relation(fields: [locationId], references: [id])
+
+  @@unique([locationId])
+}
+
+model Meta {
+  key       String   @id
+  value     String
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  name       String?
+  createdAt  DateTime   @default(now())
+  favorites  Favorite[]
+  profiles   Profile[]
+}
+
+model Favorite {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  locationId Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+  @@unique([userId, locationId])
+}
+
+model Profile {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  data       Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  user       User     @relation(fields: [userId], references: [id])
+}
+
