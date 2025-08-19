@@ -1,20 +1,13 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-const isProtectedRoute = createRouteMatcher([
-  '/app(.*)',
-  '/onboarding(.*)',
-  '/account(.*)'
-])
-
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect()
-  }
-})
+// Simple pass-through middleware for development
+export default function middleware(req: NextRequest) {
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [
-    // Run middleware on all paths except static assets and Next internals
+    // Skip middleware for static assets and Next internals
     '/((?!_next|_vercel|.*\\..*).*)',
   ],
 }

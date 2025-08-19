@@ -2,15 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton, useUser } from '@clerk/nextjs';
-
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user } = useUser();
+  const user = { firstName: 'Demo' }; // Mock user for development
 
   const navigation = [
     { name: 'Quick Look', href: '/app/quick', icon: '🎯' },
@@ -59,13 +57,9 @@ export default function AppLayout({
               >
                 Upgrade
               </Link>
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: 'w-8 h-8'
-                  }
-                }}
-              />
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                {user?.firstName?.[0] || 'D'}
+              </div>
             </div>
           </div>
 

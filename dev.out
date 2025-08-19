@@ -1,0 +1,42 @@
+
+> trueplace@0.1.0 dev-alt
+> next dev
+
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.43.147:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1429ms
+ ✓ Compiled /middleware in 288ms (218 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 1486ms (1116 modules)
+ GET / 200 in 2054ms
+ ✓ Compiled in 759ms (424 modules)
+ ✓ Compiled in 1135ms (1334 modules)
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.43.147:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1349ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1650ms (612 modules)
+ GET / 200 in 1826ms
+ ✓ Compiled in 189ms (242 modules)
+ ✓ Compiled /favicon.ico in 153ms (369 modules)
+ GET /favicon.ico 200 in 241ms
+ GET /favicon.ico 200 in 21ms
+ GET /favicon.ico 200 in 10ms
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.43.147:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1498ms
+   Reload env: .env.local

@@ -1,6 +1,13 @@
-# TruePlace
+# TruePlace — Feels Like You Belong, Backed by Facts
 
-TruePlace helps people decide where they'll feel at home by turning public/open data into clear, explainable location insights and ranked recommendations. It blends safety, affordability, diversity, health, and sustainability signals into a transparent score, with drill-downs and citations so users can verify the source of truth.
+A hybrid web app that gives people a personalized Location Compatibility Score (the TruePlace Score) using open/public datasets (FBI, Census, CDC, HUD, etc.), with a Quick Look for casual users and Deep Dive dashboards for power users.
+
+Built for speed to MVP + subscription revenue using:
+- Next.js (App Router) on Vercel
+- Tailwind + shadcn/ui for UI
+- Convex for real-time, type-safe DB + server functions
+- Clerk for auth and billing (B2C SaaS)
+- TypeScript end-to-end
 
 ## 🌟 Core Features
 

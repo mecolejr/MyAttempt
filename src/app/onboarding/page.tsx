@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
-
 interface ProfileData {
   budgetMax: number;
   safetySensitivity: number;
@@ -18,7 +16,7 @@ interface ProfileData {
 }
 
 export default function OnboardingPage() {
-  const { user } = useUser();
+  const user = { firstName: 'Demo', emailAddresses: [{ emailAddress: 'demo@trueplace.com' }] }; // Mock user
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [profile, setProfile] = useState<ProfileData>({

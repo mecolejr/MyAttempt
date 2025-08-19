@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -67,7 +66,7 @@ const mockMatches: QuickMatch[] = [
 ];
 
 export default function QuickLookPage() {
-  const { user } = useUser();
+  const user = { firstName: 'Demo' }; // Mock user for development
   const [loading, setLoading] = useState(false);
   const Map = dynamic(() => import('@/components/Map'), { ssr: false });
   const [welcome, setWelcome] = useState<string | null>(null);
