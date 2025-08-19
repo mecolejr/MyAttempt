@@ -64,3 +64,5 @@ export function computeTruePlaceScore(
 }
 
 
+
+export const SCORE_VERSION = "v0";

@@ -1,0 +1,3 @@
+# Changelog
+
+- Initialize durability scaffolding.

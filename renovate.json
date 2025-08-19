@@ -1,0 +1,1 @@
+{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["config:recommended"],"labels":["dependencies"],"prHourlyLimit":2,"timezone":"America/Los_Angeles","schedule":["after 8am and before 6pm on monday"],"packageRules":[{"matchUpdateTypes":["minor","patch"],"automerge":true},{"matchManagers":["npm"],"rangeStrategy":"replace"}]}
